@@ -1,0 +1,15 @@
+Bubble Shooter is a modern, colorful 2D bubble popping puzzle game. Aim, bounce off walls, and match 3 or more bubbles of the same color to clear the board and level up.
+
+Key Features:
+
+Classic Bubble Shooter Gameplay: Intuitive aiming and shooting physics. Match 3 or more bubbles to pop them.
+
+Campaign Mode: Advance through progressively challenging levels designed to test your strategy and precision.
+
+Zen Mode: Relax with endless, stress-free bubble popping without time or move pressure.
+
+Custom Themes and Skins: Personalize your visual experience with distinct color palettes and styles.
+
+Tactile Haptic Feedback: Feel satisfying response with every bubble pop and shot.
+
+Completely Offline: Play anywhere, anytime without requiring an internet connection. Progress is automatically saved on your device.
