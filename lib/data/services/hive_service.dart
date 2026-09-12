@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'package:bubbleshooter/domain/models/bubble.dart';
 import 'package:bubbleshooter/domain/models/user_progress.dart';
 import 'user_progress_adapter.dart';
 
@@ -48,6 +50,33 @@ class HiveService {
 
   Future<void> saveHapticsEnabled(bool enabled) async {
     await _settingsBox.put('haptics_enabled', enabled);
+  }
+
+  Map<BubbleColor, Color>? getCustomColors() {
+    final raw = _settingsBox.get('custom_bubble_colors');
+    if (raw is Map) {
+      final map = <BubbleColor, Color>{};
+      for (final entry in raw.entries) {
+        final color = BubbleColor.values.where((c) => c.name == entry.key).firstOrNull;
+        if (color != null && entry.value is int) {
+          map[color] = Color(entry.value as int);
+        }
+      }
+      return map.isEmpty ? null : map;
+    }
+    return null;
+  }
+
+  Future<void> saveCustomColors(Map<BubbleColor, Color> colors) async {
+    final map = <String, int>{};
+    for (final entry in colors.entries) {
+      map[entry.key.name] = entry.value.toARGB32();
+    }
+    await _settingsBox.put('custom_bubble_colors', map);
+  }
+
+  Future<void> resetCustomColors() async {
+    await _settingsBox.delete('custom_bubble_colors');
   }
 }
 

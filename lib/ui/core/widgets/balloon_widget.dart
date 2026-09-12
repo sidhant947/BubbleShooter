@@ -6,11 +6,13 @@ class BalloonWidget extends StatelessWidget {
   const BalloonWidget({
     super.key,
     required this.color,
+    this.customColor,
     this.size = 40.0,
     this.opacity = 1.0,
   });
 
   final BubbleColor color;
+  final Color? customColor;
   final double size;
   final double opacity;
 
@@ -22,6 +24,7 @@ class BalloonWidget extends StatelessWidget {
       child: CustomPaint(
         painter: _BalloonPainter(
           color: color,
+          customColor: customColor,
           opacity: opacity,
         ),
       ),
@@ -32,10 +35,12 @@ class BalloonWidget extends StatelessWidget {
 class _BalloonPainter extends CustomPainter {
   const _BalloonPainter({
     required this.color,
+    this.customColor,
     required this.opacity,
   });
 
   final BubbleColor color;
+  final Color? customColor;
   final double opacity;
 
   @override
@@ -47,11 +52,14 @@ class _BalloonPainter extends CustomPainter {
       center: center,
       radius: radius * 0.82,
       color: color,
+      customColor: customColor,
       opacity: opacity,
     );
   }
 
   @override
   bool shouldRepaint(covariant _BalloonPainter oldDelegate) =>
-      oldDelegate.color != color || oldDelegate.opacity != opacity;
+      oldDelegate.color != color ||
+      oldDelegate.customColor != customColor ||
+      oldDelegate.opacity != opacity;
 }

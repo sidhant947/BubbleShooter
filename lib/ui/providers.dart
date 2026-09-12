@@ -1,6 +1,8 @@
+import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bubbleshooter/data/repositories/progress_repository.dart';
 import 'package:bubbleshooter/data/services/hive_service.dart';
+import 'package:bubbleshooter/domain/models/bubble.dart';
 import 'package:bubbleshooter/ui/features/game/view_models/game_view_model.dart';
 import 'package:bubbleshooter/ui/features/home/view_models/home_view_model.dart';
 import 'package:bubbleshooter/data/repositories/settings_repository.dart';
@@ -28,6 +30,11 @@ final hintHelperEnabledProvider = Provider<bool>((ref) {
 final hapticsEnabledProvider = Provider<bool>((ref) {
   final settingsRepo = ref.watch(settingsRepositoryProvider);
   return settingsRepo.hapticsEnabled;
+});
+
+final bubbleColorsProvider = Provider<Map<BubbleColor, Color>>((ref) {
+  final settingsRepo = ref.watch(settingsRepositoryProvider);
+  return settingsRepo.customColors;
 });
 
 final progressRepositoryProvider = ChangeNotifierProvider<ProgressRepository>((ref) {

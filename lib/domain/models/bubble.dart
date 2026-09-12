@@ -2,50 +2,68 @@ import 'package:flutter/material.dart';
 
 enum BubbleColor {
   red(
-    color: Color(0xFFEF4444),
-    darkColor: Color(0xFFB91C1C),
-    lightColor: Color(0xFFFCA5A5),
+    defaultColor: Color(0xFFEF4444),
+    defaultDarkColor: Color(0xFFB91C1C),
+    defaultLightColor: Color(0xFFFCA5A5),
   ),
   blue(
-    color: Color(0xFF3B82F6),
-    darkColor: Color(0xFF1D4ED8),
-    lightColor: Color(0xFF93C5FD),
+    defaultColor: Color(0xFF2563EB),
+    defaultDarkColor: Color(0xFF1D4ED8),
+    defaultLightColor: Color(0xFF93C5FD),
   ),
   green(
-    color: Color(0xFF10B981),
-    darkColor: Color(0xFF047857),
-    lightColor: Color(0xFF6EE7B7),
+    defaultColor: Color(0xFF16A34A),
+    defaultDarkColor: Color(0xFF15803D),
+    defaultLightColor: Color(0xFF86EFAC),
   ),
   yellow(
-    color: Color(0xFFF59E0B),
-    darkColor: Color(0xFFB45309),
-    lightColor: Color(0xFFFDE68A),
+    defaultColor: Color(0xFFEAB308),
+    defaultDarkColor: Color(0xFFA16207),
+    defaultLightColor: Color(0xFFFEF08A),
   ),
   purple(
-    color: Color(0xFF8B5CF6),
-    darkColor: Color(0xFF6D28D9),
-    lightColor: Color(0xFFC4B5FD),
+    defaultColor: Color(0xFF9333EA),
+    defaultDarkColor: Color(0xFF6B21A8),
+    defaultLightColor: Color(0xFFD8B4FE),
   ),
   orange(
-    color: Color(0xFFF97316),
-    darkColor: Color(0xFFC2410C),
-    lightColor: Color(0xFFFDBA74),
+    defaultColor: Color(0xFFF97316),
+    defaultDarkColor: Color(0xFFC2410C),
+    defaultLightColor: Color(0xFFFDBA74),
   ),
   cyan(
-    color: Color(0xFF06B6D4),
-    darkColor: Color(0xFF0E7490),
-    lightColor: Color(0xFF67E8F9),
+    defaultColor: Color(0xFF06B6D4),
+    defaultDarkColor: Color(0xFF0E7490),
+    defaultLightColor: Color(0xFFA5F3FC),
   );
 
   const BubbleColor({
-    required this.color,
-    required this.darkColor,
-    required this.lightColor,
+    required this.defaultColor,
+    required this.defaultDarkColor,
+    required this.defaultLightColor,
   });
 
-  final Color color;
-  final Color darkColor;
-  final Color lightColor;
+  final Color defaultColor;
+  final Color defaultDarkColor;
+  final Color defaultLightColor;
+
+  static Map<BubbleColor, Color>? customOverrides;
+
+  Color get color => customOverrides?[this] ?? defaultColor;
+
+  Color get darkColor {
+    final custom = customOverrides?[this];
+    if (custom == null) return defaultDarkColor;
+    final hsl = HSLColor.fromColor(custom);
+    return hsl.withLightness((hsl.lightness * 0.68).clamp(0.0, 1.0)).toColor();
+  }
+
+  Color get lightColor {
+    final custom = customOverrides?[this];
+    if (custom == null) return defaultLightColor;
+    final hsl = HSLColor.fromColor(custom);
+    return hsl.withLightness((hsl.lightness + (1.0 - hsl.lightness) * 0.45).clamp(0.0, 1.0)).toColor();
+  }
 }
 
 @immutable

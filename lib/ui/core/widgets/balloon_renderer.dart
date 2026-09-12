@@ -8,6 +8,7 @@ class BalloonRenderer {
     required Offset center,
     required double radius,
     required BubbleColor color,
+    Color? customColor,
     double opacity = 1.0,
     double scale = 1.0,
   }) {
@@ -18,8 +19,14 @@ class BalloonRenderer {
     }
 
     final double effectiveRadius = radius;
+    final effectiveColor = customColor ?? color.color;
+    final effectiveDarkColor = customColor != null
+        ? HSLColor.fromColor(customColor).withLightness((HSLColor.fromColor(customColor).lightness * 0.68).clamp(0.0, 1.0)).toColor()
+        : color.darkColor;
+    final effectiveLightColor = customColor != null
+        ? HSLColor.fromColor(customColor).withLightness((HSLColor.fromColor(customColor).lightness + (1.0 - HSLColor.fromColor(customColor).lightness) * 0.45).clamp(0.0, 1.0)).toColor()
+        : color.lightColor;
 
-    // 1. Soft contact depth shadow
     final shadowPaint = Paint()
       ..color = Colors.black.withValues(alpha: 0.2 * opacity)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.5);
@@ -32,36 +39,33 @@ class BalloonRenderer {
       shadowPaint,
     );
 
-    // 2. Bubble body with rich 3D sphere gradient
     final bodyPaint = Paint()
       ..shader = RadialGradient(
         center: const Alignment(-0.35, -0.38),
         radius: 0.92,
         colors: [
-          color.lightColor.withValues(alpha: opacity),
-          color.color.withValues(alpha: opacity),
-          color.darkColor.withValues(alpha: opacity),
+          effectiveLightColor.withValues(alpha: opacity),
+          effectiveColor.withValues(alpha: opacity),
+          effectiveDarkColor.withValues(alpha: opacity),
         ],
         stops: const [0.0, 0.55, 1.0],
       ).createShader(Rect.fromCircle(center: Offset.zero, radius: effectiveRadius));
 
     canvas.drawCircle(Offset.zero, effectiveRadius, bodyPaint);
 
-    // 3. Inner ambient translucency bounce light (bottom right crescent)
     final bounceGlowPaint = Paint()
       ..shader = RadialGradient(
         center: const Alignment(0.42, 0.48),
         radius: 0.52,
         colors: [
-          color.lightColor.withValues(alpha: 0.4 * opacity),
-          color.lightColor.withValues(alpha: 0.0),
+          effectiveLightColor.withValues(alpha: 0.4 * opacity),
+          effectiveLightColor.withValues(alpha: 0.0),
         ],
       ).createShader(Rect.fromCircle(center: Offset.zero, radius: effectiveRadius));
     canvas.drawCircle(Offset.zero, effectiveRadius, bounceGlowPaint);
 
-    // 4. Crisp rim outline
     final rimPaint = Paint()
-      ..color = color.darkColor.withValues(alpha: 0.35 * opacity)
+      ..color = effectiveDarkColor.withValues(alpha: 0.35 * opacity)
       ..style = PaintingStyle.stroke
       ..strokeWidth = math.max(0.8, effectiveRadius * 0.045);
     canvas.drawCircle(Offset.zero, effectiveRadius, rimPaint);
